@@ -24,11 +24,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Run Playwright tests
+      # Step 4: Install Playwright
+      - name: Install Playwright
+        run: npx playwright install
+
+      # Step 5: Run Playwright tests
       - name: Run Playwright tests
         run: npx playwright test
 
-      # Optional: Step 5: Upload Playwright test results (if enabled in your config)
+      # Optional: Step 6: Upload Playwright test results (if enabled in your config)
       - name: Upload Playwright results
         if: failure() # Only upload results if tests fail
         uses: actions/upload-artifact@v3

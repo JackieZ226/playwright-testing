@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest # Use a Linux-based environment
+    runs-on: windows-latest # Use a Linux-based environment
 
     steps:
       # Step 1: Checkout the repository

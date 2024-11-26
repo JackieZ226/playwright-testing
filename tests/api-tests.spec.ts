@@ -48,8 +48,6 @@ test('API Testing', async ({ request }) => {
     await expect(response.status()).toBe(200);
 
     const responseBody = await response.json();
-    console.log(responseBody);
-    console.log(response.headers());
     await expect(responseBody.responseCode).toBe(400);
     await expect(responseBody.message).toBe('Bad request, search_product parameter is missing in POST request.');
   });

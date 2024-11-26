@@ -14,12 +14,13 @@ test('Register User Test Case', async({page}) => {
 
         let name:string = "JackieZh";
         let email:string = "JackieZHTest@Email.com";
-        dotenv.config();
+        // dotenv.config();
         //review throwing errors and IIFE
         //sets password to the env variable in .env
-        const password:string = process.env.PASSWORD ?? (() => {
-            throw new Error('Environment variable PASSWORD is required');
-        })();
+        // const password:string = process.env.PASSWORD ?? (() => {
+        //     throw new Error('Environment variable PASSWORD is required');
+        // })();
+        const password:string = process.env.PASSWORD ?? 'DEFAULTPASSWORD';
         //Fill in Sign Up information in Login/Signup page
         await page.getByPlaceholder('Name').fill(name);
         await page.locator("//input[@data-qa='signup-email']").fill(email); //locator for email
@@ -64,7 +65,15 @@ test('Register User Test Case', async({page}) => {
         
         //Delete the account and continue to main dashboard/URL
         await expect(page.getByText("ACCOUNT DELETED!")).toBeVisible();
-        await page.locator("//a[@data-qa='continue-button' and @class='btn btn-primary']");
+        await page.locator("//a[@data-qa='continue-button' and @class='btn btn-primary']").click();
         await expect(page).toHaveURL('https://www.automationexercise.com/');
+        
     });
-})
+});
+
+// test('Login User with correct email and password', async({page})=>{
+//     await test.step("Navigate to url", async()=>{
+//         await page.goto('http://automationexercise.com');
+//         await page.locator("//img[@alt='Website for automation practice']").isVisible();
+//     });
+// });

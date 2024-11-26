@@ -53,3 +53,12 @@ test('API Testing', async ({ request }) => {
     await expect(responseBody.responseCode).toBe(400);
     await expect(responseBody.message).toBe('Bad request, search_product parameter is missing in POST request.');
   });
+
+  test("POST To Search Product without search_product parameter", async({request})=>{
+    const response = await request.post("https://automationexercise.com/api/searchProduct");
+    await expect(response.status()).toBe(200);
+
+    const responseBody = await response.json();
+    await expect(responseBody.responseCode).toBe(400);
+    await expect(responseBody.message).toBe("Bad request, search_product parameter is missing in POST request.");
+  })

@@ -1,2 +1,2 @@
 # playwright-testing
-Test automation of QA practice website https://www.automationexercise.com/
+UI and API Test Automation for QA practice website https://www.automationexercise.com/ using GitHub Actions for CICD practice triggering on push to repo / scheduled daily

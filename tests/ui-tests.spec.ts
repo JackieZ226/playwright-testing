@@ -3,7 +3,7 @@ import {SignUpPage} from '../POM/SignUpPOM'
 import { LoginPage } from '../POM/LogInPOM';
 require('dotenv').config()
 
-test('Register User Test Case', async({page}) => {
+test('Test Case #1: Register User Test Case', async({page}) => {
     await test.step('Navigate to URL', async() => {
         await page.goto('https://www.automationexercise.com/');
         await expect(page.getByRole('heading', {name:'AutomationExercise'})).toBeVisible();
@@ -74,11 +74,12 @@ test('Register User Test Case', async({page}) => {
     });
 });
 
-test('Login User with correct email and password', async({page})=>{
+test('Test Case #2: Login User with correct email and password', async({page})=>{
     //Created an account for this, stored in dotenv/github secrets
     await test.step("Navigate to url", async()=>{
         await page.goto('http://automationexercise.com');
         await page.locator("//img[@alt='Website for automation practice']").isVisible();
+        await page.locator("//a[@href='/login']").click();
     });
 
     await  test.step("Login with valid credentials", async()=>{
@@ -94,6 +95,133 @@ test('Login User with correct email and password', async({page})=>{
             throw new Error("Missing existing credentials");
         }
 
-        await loginPage.login(existingEmail, existingPassword, existingUsername);
+        await loginPage.login(existingEmail, existingPassword);
+        await expect(page.getByText("Logged in as "+existingUsername)).toBeVisible();
     });
+});
+
+test('Test Case #3: Login User with incorrect email and password', async({page})=>{
+    await test.step('Navigate to Login', async()=>{
+        await page.goto('https://www.automationexercise.com/');
+        await page.locator("//a[@href='/login']").click();
+    });
+
+    await test.step('Input Incorrect credentials', async()=>{
+        const loginPage = new LoginPage(page);
+        await loginPage.login("fakeruseremail@email.com","badpassword43215");
+        await expect(page.getByText("Your email or password is incorrect!")).toBeVisible();
+    });
+});
+
+test('Test Case #4: Logout User', async({page})=>{
+    await test.step('Navigate to URL and login as user', async()=>{
+        await page.goto('https://www.automationexercise.com/');
+        await page.locator("//a[@href='/login']").click();
+
+        const loginPage = new LoginPage(page);
+        const existingEmail = process.env.EXISTING_EMAIL;
+        const existingPassword = process.env.EXISTING_PASSWORD;
+        const existingUsername = process.env.EXISTING_USERNAME;
+
+        if(!existingEmail || !existingPassword || !existingUsername){
+            throw new Error("Missing credentials");
+        }
+
+        await loginPage.login(existingEmail,existingPassword);
+        //verify username
+        await expect(page.getByText("Logged in as " + existingUsername)).toBeVisible();
+    });
+
+    await test.step('Logout of user', async()=>{
+        await page.locator("//a[@href='/logout']").click();
+        await expect(page).toHaveURL('https://www.automationexercise.com/login');
+    });
+});
+
+test('Test Case #5: Register User with Existing email', async({page})=>{
+
+});
+
+test('Test Case #6: Contact Us Form', async({page})=>{
+
+});
+
+test('Test Case #7: Verify Test Cases Page', async({page})=>{
+
+});
+
+test('Test Case #8: Verify All Products and Product detail page', async({page})=>{
+
+});
+
+test('Test Case #9: Search Product', async({page})=>{
+
+});
+
+test('Test Case #10: Verify Subscription in home page', async({page})=>{
+
+});
+
+test('Test Case #11: Verify Subscription in Cart page', async({page})=>{
+
+});
+
+test('Test Case #12: Add Products in Cart', async({page})=>{
+
+});
+
+test('Test Case #13: Verify Product quantity in Cart', async({page})=>{
+
+});
+
+test('Test Case #14: Place Order: Register while Checkout', async({page})=>{
+
+});
+
+test('Test Case #15: Place Order: Register before Checkout', async({page})=>{
+
+});
+
+test('Test Case #16: Login before Checkout', async({page})=>{
+
+});
+
+test('Test Case #17: Remove Products from Cart', async({page})=>{
+
+});
+
+test('Test Case #18: View Category Products', async({page})=>{
+
+});
+
+test('Test Case #19: View and Cart Brand Products', async({page})=>{
+
+});
+
+test('Test Case #20: Search Products and Verify Cart After Login', async({page})=>{
+
+});
+
+test('Test Case #21: Add Review on Product', async({page})=>{
+
+});
+
+test('Test Case #22: Add to cart from Recommended items', async({page})=>{
+
+});
+
+test('Test Case #23: Verify Address Details in Checkout Page', async({page})=>{
+
+});
+
+test('Test Case #24: Download Invoice after Purchase Order', async({page})=>{
+
+});
+
+test('Test Case #25: Verify Scroll Up using Arrow button and Scroll Down Functionality', async({page})=>{
+
+});
+
+test('Test Case #26: Verify Scroll Up without Arrow button and Scroll down functionality', async({page})=>{
+
 });

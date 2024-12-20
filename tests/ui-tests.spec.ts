@@ -1,6 +1,7 @@
 import {test,expect} from '@playwright/test'
 import {SignUpPage} from '../POM/SignUpPOM'
-import * as dotenv from 'dotenv'
+import { LoginPage } from '../POM/LogInPOM';
+require('dotenv').config()
 
 test('Register User Test Case', async({page}) => {
     await test.step('Navigate to URL', async() => {
@@ -12,15 +13,17 @@ test('Register User Test Case', async({page}) => {
         await page.getByText(' Signup / Login').click();
         await expect(page.getByRole('heading', {name:'New User Signup!'})).toBeVisible();
 
-        let name:string = "JackieZh";
-        let email:string = "JackieZHTest@Email.com";
-        // dotenv.config();
-        //review throwing errors and IIFE
-        //sets password to the env variable in .env
-        // const password:string = process.env.PASSWORD ?? (() => {
-        //     throw new Error('Environment variable PASSWORD is required');
-        // })();
-        const password:string = process.env.PASSWORD ?? 'DEFAULTPASSWORD';
+        //GRAB EXISTING USER CREDENTIALS FROM ENV
+        //SINCE ENV IS IGNORED WE ADD ENV SECTION TO GITHUB ACTIONS TO ACCESS CREDENTIALS
+        let name = process.env.SIGNUP_USERNAME
+        let email = process.env.SIGNUP_EMAIL
+        const password = process.env.SIGNUP_PASSWORD
+
+        //IF EITHER EMAIL OR PASSWORD OR USERNAME IS MISSING/NULL FAIL THE TEST AND THROW AN ERROR
+        if(!email || !name || !password){
+            throw new Error('Missing login credentials');
+        }
+
         //Fill in Sign Up information in Login/Signup page
         await page.getByPlaceholder('Name').fill(name);
         await page.locator("//input[@data-qa='signup-email']").fill(email); //locator for email
@@ -71,9 +74,26 @@ test('Register User Test Case', async({page}) => {
     });
 });
 
-// test('Login User with correct email and password', async({page})=>{
-//     await test.step("Navigate to url", async()=>{
-//         await page.goto('http://automationexercise.com');
-//         await page.locator("//img[@alt='Website for automation practice']").isVisible();
-//     });
-// });
+test('Login User with correct email and password', async({page})=>{
+    //Created an account for this, stored in dotenv/github secrets
+    await test.step("Navigate to url", async()=>{
+        await page.goto('http://automationexercise.com');
+        await page.locator("//img[@alt='Website for automation practice']").isVisible();
+    });
+
+    await  test.step("Login with valid credentials", async()=>{
+        const loginPage = new LoginPage(page);
+        //GRAB EXISTING USER CREDENTIALS FROM ENV
+        //SINCE ENV IS IGNORED WE ADD ENV SECTION TO GITHUB ACTIONS TO ACCESS CREDENTIALS
+        const existingEmail = process.env.EXISTING_EMAIL;
+        const existingPassword = process.env.EXISTING_PASSWORD;
+        const existingUsername = process.env.EXISTING_USERNAME;
+
+        //IF EITHER EMAIL OR PASSWORD IS MISSING/NULL FAIL THE TEST AND THROW AN ERROR
+        if(!existingEmail || !existingPassword || !existingUsername){
+            throw new Error("Missing existing credentials");
+        }
+
+        await loginPage.login(existingEmail, existingPassword, existingUsername);
+    });
+});

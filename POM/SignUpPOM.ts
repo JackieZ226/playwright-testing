@@ -7,6 +7,18 @@ export class SignUpPage{
         this.page = page;
     }
 
+    async signUp(name:string,email:string){
+        if(await this.page.url() === "https://www.automationexercise.com/login"){
+        }
+        else{
+            await this.page.goto("https://www.automationexercise.com/login");
+        }
+
+        await this.page.locator("//input[@data-qa='signup-name']").fill(name);
+        await this.page.locator("//input[@data-qa='signup-email']").fill(email);
+        await this.page.getByRole('button',{name:'Signup'}).click();
+    }
+
     async setTitle(title:string){
         await this.page.locator("//input[@type='radio' and @name='title' and @value = '" + title +"']").click();
     }

@@ -1,6 +1,7 @@
 import {test,expect} from '@playwright/test'
 import {SignUpPage} from '../POM/SignUpPOM'
 import { LoginPage } from '../POM/LogInPOM';
+import { ContactUsPOM } from '../POM/ContactUsPOM';
 require('dotenv').config()
 
 test('Test Case #1: Register User Test Case', async({page}) => {
@@ -139,11 +140,46 @@ test('Test Case #4: Logout User', async({page})=>{
 });
 
 test('Test Case #5: Register User with Existing email', async({page})=>{
+    await test.step("Navigate to Signup/Login page", async()=>{
+        await page.goto('https://www.automationexercise.com/');
+        await page.locator("//a[@href='/login']").click();
+        await expect(page).toHaveURL('https://www.automationexercise.com/login');
+    });
 
+    await test.step("Sign up with an existing email address", async()=>{
+        const signUpPage = new SignUpPage(page);
+        const username = process.env.EXISTING_USERNAME;
+        const email = process.env.EXISTING_EMAIL;
+        if(!username || !email){
+            throw new Error("Missing Credentials from dotenv/Secrets");
+        }
+        await signUpPage.signUp(username,email);
+        await expect(page.getByText('Email Address already exist!')).toBeVisible();
+    });
 });
 
 test('Test Case #6: Contact Us Form', async({page})=>{
+    await test.step("Navigate to Contact Us Page", async()=>{
+        await page.goto('https://www.automationexercise.com/');
+        await page.locator("//a[@href='/contact_us']").click();
+        await expect(page.getByText("GET IN TOUCH")).toBeVisible();
+    });
 
+    await test.step("Send a contact message with existing user", async()=>{
+        const contactUsPage = new ContactUsPOM(page);
+        const username = process.env.EXISTING_USERNAME;
+        const email = process.env.EXISTING_EMAIL;
+        const subject = 'Testing contact';
+        const message = "test message to send";
+        const fileToUpload = "./testfile.txt";
+
+        if(!username || !email){
+            throw new Error("missing credentials");
+        }
+
+        await contactUsPage.contact(username, email, subject, message, fileToUpload);
+        await expect(page.locator("//div[@class='status alert alert-success' and text()='Success! Your details have been submitted successfully.']")).toBeVisible();
+    })
 });
 
 test('Test Case #7: Verify Test Cases Page', async({page})=>{
